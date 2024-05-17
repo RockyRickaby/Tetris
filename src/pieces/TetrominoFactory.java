@@ -123,10 +123,4 @@ public class TetrominoFactory {
 
         return new Tetromino("Z", points, position, center);
     }
-
-    public Tetromino createCustomPiece(String name, Block[] points, Point2D.Float center, Color color) {
-        // Point2D.Float center = new Point2D.Float();
-        // Point2D.Float position = new Point2D.Float();
-        return null;
-    }
 }
