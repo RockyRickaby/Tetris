@@ -1,7 +1,7 @@
 package tetris;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -91,17 +91,14 @@ public class TetrisGame {
             piecesPerRow = board.getAmountOfBlocksInRow(i);
             if (piecesPerRow == boardColumns) {
                 rowsToClear.add(i);
+                board.clearRow(i);
             }
         }
         if (rowsToClear.isEmpty()) {
             return false;
         }
 
-        for (int row : rowsToClear) {
-            board.clearRow(row);
-        }
-        
-        rowsToClear.sort((a, b) -> b - a);
+        rowsToClear.sort(Collections.reverseOrder());
         for (int row : rowsToClear) {
             board.pullAboveBlocksDownFrom(row);
         }

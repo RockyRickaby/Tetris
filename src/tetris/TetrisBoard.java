@@ -3,7 +3,6 @@ package tetris;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
-import java.util.List;
 import java.util.function.BiPredicate;
 
 import pieces.Block;
