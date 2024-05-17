@@ -83,7 +83,7 @@ public class TetrisBoard {
             return false;
         }
 
-        if (checkCollisions(this.currentTetromino, 0, -1, (x, y) -> y <= 1 && (x >= 1 && x <= width))) {
+        if (checkCollisions(this.currentTetromino, 0, -1, (x, y) -> y <= 1)) {
             return false;
         }
 
@@ -96,7 +96,7 @@ public class TetrisBoard {
             return false;
         }
 
-        if (checkCollisions(this.currentTetromino, -1, 0, (x, y) -> x <= 1 && (y >= 1 && y <= height))) {
+        if (checkCollisions(this.currentTetromino, -1, 0, (x, y) -> x <= 1)) {
             return false;
         }
 
@@ -109,7 +109,7 @@ public class TetrisBoard {
             return false;
         }
 
-        if (checkCollisions(this.currentTetromino, 1, 0, (x, y) -> x >= width && (y >= 1 && y <= height))) {
+        if (checkCollisions(this.currentTetromino, 1, 0, (x, y) -> x >= width)) {
             return false;
         }
 
