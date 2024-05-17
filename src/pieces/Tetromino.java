@@ -30,7 +30,7 @@ public class Tetromino {
     }
 
     public static Tetromino copyOf(Tetromino other) {
-        return new Tetromino(other.name, other.getBlocks(), other.getCenter(), other.getPosition());
+        return new Tetromino(other.name, other.getBlocks(), other.getPosition(), other.getCenter());
     }
 
     public Tetromino copy() {
@@ -123,6 +123,15 @@ public class Tetromino {
         return posCopy;
     }
 
+    public void setPosition(int x, int y) {
+        this.position.x = x;
+        this.position.y = y;
+    }
+
+    public void setPosition(Point2D.Float pos) {
+        this.position.setLocation(pos);
+    }
+
     public void resetPiece() {
         for (int i = 0; i < cells.length; i++) {
             while (!cells[i].equals(backup[i])) {
@@ -130,6 +139,11 @@ public class Tetromino {
             }
         }
         this.position.setLocation(initialPos);
+    }
+
+    public Tetromino moveUp() {
+        position.y += 1;
+        return this;
     }
 
     public Tetromino moveDown() {
