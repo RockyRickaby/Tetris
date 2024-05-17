@@ -110,6 +110,17 @@ public class TetrisRenderer extends JPanel {
             }
         });
 
+        inputmap.put(KeyStroke.getKeyStroke("G"), "TOGGLE_GHOST");
+        actionmap.put("TOGGLE_GHOST", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.toggleGhostPiece();
+                repaint();
+            }
+            
+        });
+
         this.setPreferredSize(preferredSize);
     }
 
@@ -138,9 +149,24 @@ public class TetrisRenderer extends JPanel {
             }
         }
                 
-        // draws current Tetromino
+        // draws current Tetromino and GhostPiece
         g2d.setColor(Color.BLACK);
         Tetromino piece = board.getCurrentTetromino();
+        Tetromino ghostPiece = board.getGhostPiece();
+
+        if (ghostPiece != null) {
+            for (Block b : ghostPiece.getBlocks()) {
+                float x = b.getX() + ghostPiece.getPosition().x;
+                float y = b.getY() + ghostPiece.getPosition().y;
+    
+                rect.setFrame((x - 1) * blockScale + boardXOffset, (board.getHeight() - y) * blockScale, blockScale, blockScale);
+                g2d.setColor(b.getColor());
+                g2d.fill(rect);
+                g2d.setColor(Color.BLACK);
+                g2d.draw(rect);
+            }
+        }
+
         for (Block b : piece.getBlocks()) {
             float x = b.getX() + piece.getPosition().x;
             float y = b.getY() + piece.getPosition().y;
@@ -153,6 +179,8 @@ public class TetrisRenderer extends JPanel {
         }
 
         // draws next piece block
+
+        // draws board's limits
         rect.setFrame(boardXOffset, 0, board.getWidth() * blockScale, board.getHeight() * blockScale);
 
         g2d.setColor(Color.WHITE);

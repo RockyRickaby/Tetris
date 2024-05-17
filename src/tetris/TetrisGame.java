@@ -37,6 +37,10 @@ public class TetrisGame {
         this.isOver = false;
     }
 
+    public boolean toggleGhostPiece() {
+        return this.board.toggleGhostPiece();
+    }
+
     public Tetromino getNextPiece() {
         return this.nextPiece;
     }
@@ -47,6 +51,10 @@ public class TetrisGame {
 
     public TetrisBoard getTetrisBoard() {
         return this.board;
+    }
+
+    public long getInterval() {
+        return this.updateInterval;
     }
 
     public void setInterval(long intervalInNanoseconds) {

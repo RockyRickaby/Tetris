@@ -1,16 +1,23 @@
 package tetris;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
+
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import pieces.Block;
 import pieces.Tetromino;
 
+/**
+ * The only thing this class manages automatically is the position of the ghost piece.
+ * The rest is intended to be managed by other classes/objects.
+ */
 public class TetrisBoard {
     private Tetromino currentTetromino;
-    private Tetromino ghostPiece;       // unused for now
+    private Tetromino ghostPiece;
+
+    private boolean toggleGhostPiece;
 
     private Block[][] board;
     private int[] blocksPerRow;
@@ -18,10 +25,10 @@ public class TetrisBoard {
     private int height, width;
 
     public TetrisBoard() {
-        this(10, 24);
+        this(10, 24, true);
     }
 
-    public TetrisBoard(int width, int height) {
+    public TetrisBoard(int width, int height, boolean enableGhostPiece) {
         this.width = width;
         this.height = height;
 
@@ -31,6 +38,19 @@ public class TetrisBoard {
 
         currentTetromino = null;
         ghostPiece = null;
+
+        this.toggleGhostPiece = enableGhostPiece;
+    }
+
+    public boolean toggleGhostPiece() {
+        this.toggleGhostPiece = !this.toggleGhostPiece;
+        if (toggleGhostPiece) {
+            setGhostPiece();
+            updateGhostPiece();
+        } else {
+            this.ghostPiece = null;
+        }
+        return this.toggleGhostPiece;
     }
 
     public int getHeight() {
@@ -75,7 +95,34 @@ public class TetrisBoard {
             return false;
         }
         this.currentTetromino = next;
+        this.setGhostPiece();
+        this.updateGhostPiece();
         return true;
+    }
+
+    public Tetromino getGhostPiece() {
+        return this.ghostPiece;
+    }
+
+    private void setGhostPiece() {
+        if (!toggleGhostPiece) {
+            return;
+        }
+        this.ghostPiece = currentTetromino.copy();
+
+        Color color = this.ghostPiece.getColor();
+        this.ghostPiece.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 100));
+    }
+
+    private void updateGhostPiece() {
+        if (!toggleGhostPiece) {
+            return;
+        }
+
+        this.ghostPiece.setPosition(this.currentTetromino.getPosition());
+        while (!checkCollisions(this.ghostPiece, 0, -1, (x, y) -> y <= 1)) {
+            this.ghostPiece.moveDown();
+        }
     }
 
     public boolean moveCurrTetrominoDown() {
@@ -88,6 +135,7 @@ public class TetrisBoard {
         }
 
         currentTetromino.moveDown();
+        this.updateGhostPiece();
         return true;
     }
     
@@ -101,6 +149,10 @@ public class TetrisBoard {
         }
 
         currentTetromino.moveLeft();
+        if (toggleGhostPiece) {
+            ghostPiece.moveLeft();
+        }
+        this.updateGhostPiece();
         return true;
     }
     
@@ -114,6 +166,10 @@ public class TetrisBoard {
         }
 
         currentTetromino.moveRight();
+        if (toggleGhostPiece) {
+            ghostPiece.moveRight();
+        }
+        this.updateGhostPiece();
         return true;
     }
 
@@ -137,6 +193,10 @@ public class TetrisBoard {
             currentTetromino.rotateCounterclockwise();
             return false;
         }
+        if (toggleGhostPiece) {
+            ghostPiece.rotateClockwise();
+        }
+        this.updateGhostPiece();
         return true;
     }
     
@@ -150,6 +210,10 @@ public class TetrisBoard {
             currentTetromino.rotateClockwise();
             return false;
         }
+        if (toggleGhostPiece) {
+            ghostPiece.rotateCounterclockwise();
+        }
+        this.updateGhostPiece();
         return true;
     }
 
@@ -172,6 +236,7 @@ public class TetrisBoard {
         }
         currentTetromino.resetPiece();
         currentTetromino = null;
+        ghostPiece = null;
     }
 
     private boolean checkCollisions(Tetromino piece, int xOffset, int yOffset, BiPredicate<Integer, Integer> extraTestForXAndY) {
