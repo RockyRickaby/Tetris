@@ -78,7 +78,17 @@ public class TetrisGame {
     }
 
     private Tetromino getRandomPiece() {
-        return pieces.get(rand.nextInt(pieces.size()));
+        if (usedPieces.size() == pieces.size()) {
+            usedPieces.clear();
+        }
+
+        int randMaxVal = pieces.size();
+
+        Tetromino tet = pieces.get(rand.nextInt(randMaxVal));
+        while (!usedPieces.add(tet.getTetrominoName())) {
+            tet = pieces.get(rand.nextInt(randMaxVal));
+        }
+        return tet;
     }
 
     private boolean clearRows() {
