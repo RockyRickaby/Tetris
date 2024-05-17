@@ -255,47 +255,34 @@ public class TetrisBoard {
         return false;
     }
 
-    private void pullAboveBlocksDownFrom(int row, int times) {
+    public void pullAboveBlocksDownFrom(int row) {
         if (!validIndex(1, row)) {
             return;
         }
 
-        // should I try to optimize this or is this good enough?...
-        // it might become a problem with bigger boards (n*m)
-        for (int i = 0; i < times; i++) {
-            for (int rows = row - 1; rows < height - 1; rows++) {
-                blocksPerRow[rows] = blocksPerRow[rows + 1];
-                for (int col = 0; col < width; col++) {
-                    board[rows][col] = board[rows + 1][col];
-                }
-            }
-            blocksPerRow[height - 1] = 0;
-    
+        for (int rows = row - 1; rows < height - 1; rows++) {
+            blocksPerRow[rows] = blocksPerRow[rows + 1];
             for (int col = 0; col < width; col++) {
-                board[height - 1][col] = null;
+                board[rows][col] = board[rows + 1][col];
             }
+        }
+        blocksPerRow[height - 1] = 0;
+
+        for (int col = 0; col < width; col++) {
+            board[height - 1][col] = null;
         }
     }
 
-    // caso (nao tao) excepcional = rows to clear (1,2,4)
-    // isso faz com que a fileira 3 nao seja devidamente tratada
-    public void clearRows(List<Integer> rows) {
-        rows.sort((a, b) -> a - b);
-        int lowestRow = Integer.MAX_VALUE;
-        for (int row : rows) {
-            if (!validIndex(1, row) || blocksPerRow[row - 1] < width) {
-                continue;
-            }
-
-            lowestRow = Math.min(lowestRow, row);
-            System.out.println("Clearing row " + row);
-            blocksPerRow[row - 1] = 0;
-            for (int col = 0; col < width; col++) {
-                board[row - 1][col] = null;
-                blocksPerColumn[col]--;
-            }
+    public void clearRow(int row) {
+        if (!validIndex(1, row) || blocksPerRow[row - 1] < width) {
+            return;
         }
-        pullAboveBlocksDownFrom(lowestRow, rows.size());
+
+        blocksPerRow[row - 1] = 0;
+        for (int col = 0; col < width; col++) {
+            board[row - 1][col] = null;
+            blocksPerColumn[col]--;
+        }
     }
 
     public void clearAll() {

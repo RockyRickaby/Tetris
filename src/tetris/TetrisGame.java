@@ -18,7 +18,7 @@ public class TetrisGame {
 
     private long elapsedTimeAccumulator;
     private long updateInterval;
-    private HashSet<Tetromino> usedPieces;
+    private HashSet<String> usedPieces;
 
     private boolean isOver;
 
@@ -26,6 +26,7 @@ public class TetrisGame {
         this.nextPiece = null;
         this.board = board;
         this.rand = new Random();
+        this.usedPieces = new HashSet<>();
 
         TetrominoFactory fac = new TetrominoFactory(board.getWidth(), board.getHeight());
         this.pieces = fac.getPieces();
@@ -63,9 +64,8 @@ public class TetrisGame {
 
     private void setPieces() {
         nextPiece = nextPiece == null ? getRandomPiece() : nextPiece;
-        // Tetromino aux = new TetrominoFactory(board.getWidth(), board.getHeight()).createLPiece();
         if (!board.setCurrentTetromino(nextPiece)) {
-            this.reset();
+            this.reset(); // TODO - consider changing how the game behaves when the player loses
             return;
         }
 
@@ -84,8 +84,11 @@ public class TetrisGame {
     private boolean clearRows() {
         int boardRows = board.getHeight();
         int boardColumns = board.getWidth();
+
+        int piecesPerRow = -1;
         ArrayList<Integer> rowsToClear = new ArrayList<>();
-        for (int i = 1, piecesPerRow = 0; i <= boardRows && (piecesPerRow = board.getAmountOfBlocksInRow(i)) != 0; i++) {
+        for (int i = 1; i <= boardRows; i++) {
+            piecesPerRow = board.getAmountOfBlocksInRow(i);
             if (piecesPerRow == boardColumns) {
                 rowsToClear.add(i);
             }
@@ -93,7 +96,15 @@ public class TetrisGame {
         if (rowsToClear.isEmpty()) {
             return false;
         }
-        board.clearRows(rowsToClear);
+
+        for (int row : rowsToClear) {
+            board.clearRow(row);
+        }
+        
+        rowsToClear.sort((a, b) -> b - a);
+        for (int row : rowsToClear) {
+            board.pullAboveBlocksDownFrom(row);
+        }
         return true;
     }
 
