@@ -11,16 +11,20 @@ import pieces.Tetromino;
 import pieces.TetrominoFactory;
 
 public class TetrisGame {
+    private static final long LOCK_DELAY = (int) 5e8;
+
     private ArrayList<Tetromino> pieces;
     private Tetromino nextPiece;
     private TetrisBoard board;
     private Random rand;
 
     private long elapsedTimeAccumulator;
+    private long lockDelayAccumulator;
     private long updateInterval;
     private HashSet<String> usedPieces;
 
     private boolean isOver;
+    private boolean canMoveDownwards;
 
     public TetrisGame(TetrisBoard board, long updateIntervalInNanoSeconds) {
         this.nextPiece = null;
@@ -33,9 +37,10 @@ public class TetrisGame {
 
         this.setPieces();
 
-        this.elapsedTimeAccumulator = 0;
+        this.elapsedTimeAccumulator = this.lockDelayAccumulator = 0;
         this.updateInterval = updateIntervalInNanoSeconds;
         this.isOver = false;
+        this.canMoveDownwards = true;
     }
 
     public boolean toggleGhostPiece() {
@@ -123,24 +128,20 @@ public class TetrisGame {
                 clearRows();
                 setPieces();
                 this.elapsedTimeAccumulator = 0;
+                this.lockDelayAccumulator = 0;
+                this.canMoveDownwards = true;
                 return true;
             case MOVE_DOWN:
-                if (!board.moveCurrTetrominoDown()) {
-                    board.placeCurrTetromino();
-                    clearRows();
-                    setPieces();
-                    return false;
-                }
                 this.elapsedTimeAccumulator = 0;
-                return true;
+                return (canMoveDownwards = board.moveCurrTetrominoDown());
             case MOVE_LEFT:
                 return board.moveCurrTetrominoLeft();
             case MOVE_RIGHT:
                 return board.moveCurrTetrominoRight();
             case ROTATE_CLOCKWISE:
-                return board.rotateCurrTetrominoClockwise();
+                return (canMoveDownwards = board.rotateCurrTetrominoClockwise());
             case ROTATE_COUNTERCLOCKWISE:
-                return board.rotateCurrTetrominoCounterclockwise();
+                return (canMoveDownwards = board.rotateCurrTetrominoCounterclockwise());
             default:
                 return false;
         }
@@ -152,8 +153,22 @@ public class TetrisGame {
             this.reset();
             return;
         }
+
         if (this.elapsedTimeAccumulator >= updateInterval) {
-            moveCurrentTetromino(Actions.MOVE_DOWN);
+            canMoveDownwards = moveCurrentTetromino(Actions.MOVE_DOWN);
+        }
+
+        if (!canMoveDownwards) {
+            lockDelayAccumulator += timeElapsed;
+            if (lockDelayAccumulator >= LOCK_DELAY) {
+                board.placeCurrTetromino();
+                clearRows();
+                setPieces();
+                canMoveDownwards = true;
+                lockDelayAccumulator = 0;
+            }
+        } else {
+            lockDelayAccumulator = 0;
         }
     }
 
