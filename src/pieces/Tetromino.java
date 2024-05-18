@@ -41,6 +41,10 @@ public class Tetromino {
         return cells == null ? null : cells[0].getColor();
     }
 
+    public int size() {
+        return cells.length;
+    }
+
     public String getTetrominoName() {
         return this.name;
     }
