@@ -27,6 +27,10 @@ public class TetrisBoard {
         this(10, 24, true);
     }
 
+    public TetrisBoard(int width, int height) {
+        this(width, height, true);
+    }
+
     public TetrisBoard(int width, int height, boolean enableGhostPiece) {
         this.width = width;
         this.height = height;
@@ -108,9 +112,6 @@ public class TetrisBoard {
             return;
         }
         this.ghostPiece = currentTetromino.copy();
-
-        Color color = this.ghostPiece.getColor();
-        this.ghostPiece.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 100));
     }
 
     private void updateGhostPiece() {
