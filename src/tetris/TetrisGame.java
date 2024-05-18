@@ -3,17 +3,20 @@ package tetris;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 import enums.Actions;
 import pieces.Tetromino;
 import pieces.TetrominoFactory;
-
+// TODO - CONSIDER IMPLEMENTING A WAY TO SWAP PIECES
 public class TetrisGame {
     private static final long LOCK_DELAY = (int) 5e8;
 
     private ArrayList<Tetromino> pieces;
+    private Queue<Tetromino> pieces2;
     private Tetromino nextPiece;
     private TetrisBoard board;
     private Random rand;
@@ -24,7 +27,7 @@ public class TetrisGame {
     private HashSet<String> usedPieces;
 
     private boolean isOver;
-    private boolean canMoveDownwards;
+    private boolean hasJustMoved;
 
     public TetrisGame(TetrisBoard board, long updateIntervalInNanoSeconds) {
         this.nextPiece = null;
@@ -34,13 +37,16 @@ public class TetrisGame {
 
         TetrominoFactory fac = new TetrominoFactory(board.getWidth(), board.getHeight());
         this.pieces = fac.getPieces();
+        this.pieces2 = new LinkedList<>();
+
+        pieces2.addAll(pieces);
 
         this.setPieces();
 
         this.elapsedTimeAccumulator = this.lockDelayAccumulator = 0;
         this.updateInterval = updateIntervalInNanoSeconds;
         this.isOver = false;
-        this.canMoveDownwards = true;
+        this.hasJustMoved = false;
     }
 
     public boolean toggleGhostPiece() {
@@ -113,6 +119,8 @@ public class TetrisGame {
             return false;
         }
 
+        // ideally, we'd want to do this in a single pass
+        // but this way is working as intended
         rowsToClear.sort(Collections.reverseOrder());
         for (int row : rowsToClear) {
             board.pullAboveBlocksDownFrom(row);
@@ -120,28 +128,31 @@ public class TetrisGame {
         return true;
     }
 
+    private void placeAndSetTetromino() {
+        board.placeCurrTetromino();
+        clearRows();
+        setPieces();
+    }
+
     public boolean moveCurrentTetromino(Actions movement) {
         switch (movement) {
             case HARD_DROP:
                 board.hardDropCurrTetromino();
-                board.placeCurrTetromino();
-                clearRows();
-                setPieces();
+                placeAndSetTetromino();
                 this.elapsedTimeAccumulator = 0;
                 this.lockDelayAccumulator = 0;
-                this.canMoveDownwards = true;
                 return true;
             case MOVE_DOWN:
                 this.elapsedTimeAccumulator = 0;
-                return (canMoveDownwards = board.moveCurrTetrominoDown());
+                return (board.moveCurrTetrominoDown());
             case MOVE_LEFT:
-                return board.moveCurrTetrominoLeft();
+                return (hasJustMoved = board.moveCurrTetrominoLeft());
             case MOVE_RIGHT:
-                return board.moveCurrTetrominoRight();
+                return (hasJustMoved = board.moveCurrTetrominoRight());
             case ROTATE_CLOCKWISE:
-                return (canMoveDownwards = board.rotateCurrTetrominoClockwise());
+                return (hasJustMoved = board.rotateCurrTetrominoClockwise());
             case ROTATE_COUNTERCLOCKWISE:
-                return (canMoveDownwards = board.rotateCurrTetrominoCounterclockwise());
+                return (hasJustMoved = board.rotateCurrTetrominoCounterclockwise());
             default:
                 return false;
         }
@@ -155,20 +166,18 @@ public class TetrisGame {
         }
 
         if (this.elapsedTimeAccumulator >= updateInterval) {
-            canMoveDownwards = moveCurrentTetromino(Actions.MOVE_DOWN);
+            moveCurrentTetromino(Actions.MOVE_DOWN);
         }
 
-        if (!canMoveDownwards) {
+        if (board.isDownwardsMovementObstructed() && !hasJustMoved) {
             lockDelayAccumulator += timeElapsed;
             if (lockDelayAccumulator >= LOCK_DELAY) {
-                board.placeCurrTetromino();
-                clearRows();
-                setPieces();
-                canMoveDownwards = true;
+                placeAndSetTetromino();
                 lockDelayAccumulator = 0;
             }
         } else {
             lockDelayAccumulator = 0;
+            hasJustMoved = false;
         }
     }
 

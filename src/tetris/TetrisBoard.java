@@ -55,6 +55,10 @@ public class TetrisBoard {
         return this.toggleGhostPiece;
     }
 
+    public boolean isDownwardsMovementObstructed() {
+        return checkCollisions(this.currentTetromino, 0, -1, (x, y) -> y <= 1);
+    }
+
     public int getHeight() {
         return this.height;
     }
@@ -176,10 +180,9 @@ public class TetrisBoard {
         if (currentTetromino == null) {
             return;
         }
-        System.out.println("Hard dropping tetromino");
         while (moveCurrTetrominoDown()) {
+            // :D :3 uwu owo :| :/ :> qwq
         }
-        System.out.println("Done!");
     }
 
     public boolean rotateCurrTetrominoClockwise() {
