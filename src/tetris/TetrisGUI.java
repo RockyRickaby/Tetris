@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import tetris.gui.TetrisRenderer;
 
 public class TetrisGUI extends JFrame {
+    private static final int DELAY_MS = 33;
+    
     private Timer timer;
     private javax.swing.Timer gameTimer;
 
@@ -24,7 +26,7 @@ public class TetrisGUI extends JFrame {
 
         timer = new Timer();
         // ~30 fps
-        gameTimer = new javax.swing.Timer(33, e -> {
+        gameTimer = new javax.swing.Timer(DELAY_MS, e -> {
             game.update(timer.getTimeElapsed());
             repaint();
         });

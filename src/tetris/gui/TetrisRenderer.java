@@ -135,6 +135,17 @@ public class TetrisRenderer extends JPanel {
         this.setPreferredSize(preferredSize);
     }
 
+    private void drawBlock(Graphics2D g2d, Rectangle2D.Float rect, Color fillColor, Color contourColor) {
+        if (fillColor != null) {
+            g2d.setColor(fillColor);
+            g2d.fill(rect);
+        }
+        if (contourColor != null) {
+            g2d.setColor(contourColor);
+            g2d.draw(rect);
+        }
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -146,34 +157,22 @@ public class TetrisRenderer extends JPanel {
         int boardHeight = board.getHeight();
 
         Rectangle2D.Float rect = new Rectangle2D.Float();
-        Color gray = Color.GRAY.brighter();
+        Color gray = Color.GRAY;
 
         for (int i = 0; i <= boardHeight + 1; i++) {
             rect.setFrame(boardXOffset - blockScale, i * blockScale, blockScale, blockScale);
-            g2d.setColor(gray);
-            g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
-            g2d.draw(rect);
+            drawBlock(g2d, rect, gray, Color.BLACK);
 
             rect.setFrame(boardXOffset + boardWidth * blockScale, i * blockScale, blockScale, blockScale);
-            g2d.setColor(gray);
-            g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
-            g2d.draw(rect);
+            drawBlock(g2d, rect, gray, Color.BLACK);
         }
 
         for (int i = 0; i < boardWidth + 1; i++) {
             rect.setFrame(boardXOffset + i * blockScale, 0, blockScale, blockScale);
-            g2d.setColor(gray);
-            g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
-            g2d.draw(rect);
+            drawBlock(g2d, rect, gray, Color.BLACK);
 
             rect.setFrame(boardXOffset + i * blockScale, (boardHeight + 1) * blockScale, blockScale, blockScale);
-            g2d.setColor(gray);
-            g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
-            g2d.draw(rect);
+            drawBlock(g2d, rect, gray, Color.BLACK);
         }
                 
         // draws grid
@@ -185,10 +184,7 @@ public class TetrisRenderer extends JPanel {
                 }
                 rect.setFrame((j - 1) * blockScale + boardXOffset, (boardHeight - i + 1) * blockScale, blockScale, blockScale);
 
-                g2d.setColor(block.getColor());
-                g2d.fill(rect);
-                g2d.setColor(Color.BLACK);
-                g2d.draw(rect);
+                drawBlock(g2d, rect, block.getColor(), Color.BLACK);
             }
         }
                 
@@ -203,10 +199,7 @@ public class TetrisRenderer extends JPanel {
                 float y = b.getY() + ghostPiece.getPosition().y;
     
                 rect.setFrame((x - 1) * blockScale + boardXOffset, (boardHeight - y + 1) * blockScale, blockScale, blockScale);
-                g2d.setColor(b.getColor());
-                // g2d.fill(rect);
-                // g2d.setColor(Color.BLACK);
-                g2d.draw(rect);
+                drawBlock(g2d, rect, null, b.getColor());
             }
         }
 
@@ -215,24 +208,20 @@ public class TetrisRenderer extends JPanel {
             float y = b.getY() + piece.getPosition().y;
 
             rect.setFrame((x - 1) * blockScale + boardXOffset, (boardHeight - y + 1) * blockScale, blockScale, blockScale);
-            g2d.setColor(b.getColor());
-            g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
-            g2d.draw(rect);
-        }
-
-        Tetromino nextPiece = game.getNextPiece();
-        Block[] nextPieceBlocks = nextPiece.getBlocks();
-
-        int maxX = Integer.MIN_VALUE;
-        for (Block b : nextPieceBlocks) {
-            maxX = Math.max(maxX, (int) b.getX());
+            drawBlock(g2d, rect, b.getColor(), Color.BLACK);
         }
         
         // this part has been indented and put under its own scope
         // to express how I don't really like it.
         // I like it so little that I had to make it stand out
         {
+            Tetromino nextPiece = game.getNextPiece();
+            Block[] nextPieceBlocks = nextPiece.getBlocks();
+
+            int maxX = Integer.MIN_VALUE;
+            for (Block b : nextPieceBlocks) {
+                maxX = Math.max(maxX, (int) b.getX());
+            }
             // draws next piece thingy
             float subgridXOffset = (maxX) % 2 == 0 ? 1 : 0.5f;
             float subgridYOffset = 0;
@@ -250,21 +239,13 @@ public class TetrisRenderer extends JPanel {
                 float y = b.getY();
             
                 rect.setFrame((x + subgridXOffset) * blockScale + nextpieceXOffset, (NEXT_PIECE_GRID_SIZE / 2 + 2 - y - subgridYOffset + 1) * blockScale + nextpieceYOffset, blockScale, blockScale);
-                g2d.setColor(b.getColor());
-                g2d.fill(rect);
-                g2d.setColor(Color.BLACK);
-                g2d.draw(rect);
+                drawBlock(g2d, rect, b.getColor(), Color.BLACK);
             }
         }
 
         rect.setFrame(nextpieceXOffset, nextpieceYOffset + blockScale, NEXT_PIECE_GRID_SIZE * blockScale, NEXT_PIECE_GRID_SIZE * blockScale);
         
         g2d.setStroke(new BasicStroke(3.25F));
-        g2d.setColor(Color.GRAY);
-        g2d.draw(rect);
-
-        // draws board's limits
-        // rect.setFrame(boardXOffset, blockScale, boardWidth * blockScale, boardHeight * blockScale);
-        // g2d.draw(rect);
+        drawBlock(g2d, rect, null, Color.GRAY);
     }  
 }
