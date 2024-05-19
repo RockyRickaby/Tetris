@@ -22,11 +22,27 @@ import pieces.Block;
 import pieces.Tetromino;
 import tetris.TetrisBoard;
 import tetris.TetrisGame;
+import tetris.Timer;
 
 public class TetrisRenderer extends JPanel {
     private static final int NEXT_PIECE_GRID_SIZE = 5;
+    private static final int DELAY_MS = 33;
+    
+    private static final String ACTION_TOGGLE_GHOST_PIECE = "TOGGLE_GHOST"; 
+    private static final String ACTION_PAUSE = "PAUSE";
+
+    private static final String ACTION_ROTATE_CCW = "ROTATE_CCW";
+    private static final String ACTION_ROTATE_CW = "ROTATE_CW";
+    private static final String ACTION_HARD_DROP = "HARD_DROP";
+    
+    private static final String ACTION_MOVE_RIGHT = "MOVE_RIGHT";
+    private static final String ACTION_MOVE_DOWN = "MOVE_DOWN";
+    private static final String ACTION_MOVE_LEFT = "MOVE_LEFT";
 
     private TetrisGame game;
+
+    private javax.swing.Timer gameTimer;
+    private Timer timer;
 
     private float blockScale;
     private float boardXOffset;
@@ -56,81 +72,125 @@ public class TetrisRenderer extends JPanel {
         InputMap inputmap = this.getInputMap();
         ActionMap actionmap = this.getActionMap();
 
-        inputmap.put(KeyStroke.getKeyStroke("UP"), "R_CLOCKWISE");
-        inputmap.put(KeyStroke.getKeyStroke("X"), "R_CLOCKWISE");
-        actionmap.put("R_CLOCKWISE", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("UP"), ACTION_ROTATE_CW);
+        inputmap.put(KeyStroke.getKeyStroke("X"), ACTION_ROTATE_CW);
+        actionmap.put(ACTION_ROTATE_CW, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.ROTATE_CLOCKWISE);
-                repaint();
+                getRootPane().repaint();
             }
             
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("CTRL"), "R_COUNTERCLOCKWISE");
-        inputmap.put(KeyStroke.getKeyStroke("Z"), "R_COUNTERCLOCKWISE");
-        actionmap.put("R_COUNTERCLOCKWISE", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("CTRL"), ACTION_ROTATE_CCW);
+        inputmap.put(KeyStroke.getKeyStroke("Z"), ACTION_ROTATE_CCW);
+        actionmap.put(ACTION_ROTATE_CCW, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.ROTATE_COUNTERCLOCKWISE);
-                repaint();
+                getRootPane().repaint();
             }
             
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("SPACE"), "HARD_DROP");
-        actionmap.put("HARD_DROP", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("SPACE"), ACTION_HARD_DROP);
+        actionmap.put(ACTION_HARD_DROP, new AbstractAction() {
             
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.HARD_DROP);
-                repaint();
+                getRootPane().repaint();
             }
             
         });
         
-        inputmap.put(KeyStroke.getKeyStroke("LEFT"), "MOVE_LEFT");
-        actionmap.put("MOVE_LEFT", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("LEFT"), ACTION_MOVE_LEFT);
+        actionmap.put(ACTION_MOVE_LEFT, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.MOVE_LEFT);
-                repaint();
+                getRootPane().repaint();
             }
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("RIGHT"), "MOVE_RIGHT");
-        actionmap.put("MOVE_RIGHT", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("RIGHT"), ACTION_MOVE_RIGHT);
+        actionmap.put(ACTION_MOVE_RIGHT, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.MOVE_RIGHT);
-                repaint();
+                getRootPane().repaint();
             }
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("DOWN"), "MOVE_DOWN");
-        actionmap.put("MOVE_DOWN", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("DOWN"), ACTION_MOVE_DOWN);
+        actionmap.put(ACTION_MOVE_DOWN, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.moveCurrentTetromino(Actions.MOVE_DOWN);
-                repaint();
+                getRootPane().repaint();
             }
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("G"), "TOGGLE_GHOST");
-        actionmap.put("TOGGLE_GHOST", new AbstractAction() {
+        inputmap.put(KeyStroke.getKeyStroke("G"), ACTION_TOGGLE_GHOST_PIECE);
+        actionmap.put(ACTION_TOGGLE_GHOST_PIECE, new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!gameTimer.isRunning()) {
+                    return;
+                }
                 game.toggleGhostPiece();
-                repaint();
+                getRootPane().repaint();
             }
             
         });
+
+        inputmap.put(KeyStroke.getKeyStroke("ESCAPE"), ACTION_PAUSE);
+        actionmap.put(ACTION_PAUSE, new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (gameTimer.isRunning()) {
+                    gameTimer.stop();
+                } else {
+                    timer.reset();
+                    gameTimer.start();
+                }
+            }
+            
+        });
+
+        timer = new Timer();
+        // ~30 fps
+        gameTimer = new javax.swing.Timer(DELAY_MS, e -> {
+            game.update(timer.getTimeElapsed());
+            getRootPane().repaint();
+        });
+        gameTimer.start();
 
         this.setPreferredSize(preferredSize);
     }
@@ -174,7 +234,7 @@ public class TetrisRenderer extends JPanel {
             rect.setFrame(boardXOffset + i * blockScale, (boardHeight + 1) * blockScale, blockScale, blockScale);
             drawBlock(g2d, rect, gray, Color.BLACK);
         }
-                
+
         // draws grid
         for (int i = 1; i <= boardHeight; i++) {
             for (int j = 1; j <= boardWidth; j++) {
@@ -183,13 +243,11 @@ public class TetrisRenderer extends JPanel {
                     continue;
                 }
                 rect.setFrame((j - 1) * blockScale + boardXOffset, (boardHeight - i + 1) * blockScale, blockScale, blockScale);
-
                 drawBlock(g2d, rect, block.getColor(), Color.BLACK);
             }
         }
-                
+
         // draws current Tetromino and GhostPiece
-        g2d.setColor(Color.BLACK);
         Tetromino piece = board.getCurrentTetromino();
         Tetromino ghostPiece = board.getGhostPiece();
 

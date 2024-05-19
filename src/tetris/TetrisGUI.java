@@ -9,10 +9,6 @@ import javax.swing.JPanel;
 import tetris.gui.TetrisRenderer;
 
 public class TetrisGUI extends JFrame {
-    private static final int DELAY_MS = 33;
-    
-    private Timer timer;
-    private javax.swing.Timer gameTimer;
 
     public TetrisGUI(TetrisGame game) {
         this.add(mainPanel(game));
@@ -23,19 +19,13 @@ public class TetrisGUI extends JFrame {
         this.setSize(800, 800);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-        timer = new Timer();
-        // ~30 fps
-        gameTimer = new javax.swing.Timer(DELAY_MS, e -> {
-            game.update(timer.getTimeElapsed());
-            repaint();
-        });
-        gameTimer.start();
-        System.out.println(this.getContentPane().getSize());
     }
 
     // we might use multiple panels for the different screens
     private JPanel mainPanel(TetrisGame game) {
-        return new TetrisRenderer(game, new Dimension(800, 800));
+        Dimension dim = new Dimension(800, 800);
+        JPanel panel = new TetrisRenderer(game, dim);
+
+        return panel;
     }
 }
