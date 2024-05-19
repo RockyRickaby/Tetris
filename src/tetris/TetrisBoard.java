@@ -12,6 +12,23 @@ import pieces.Tetromino;
  * The rest is intended to be managed by other classes/objects.
  */
 public class TetrisBoard {
+    // Nullpomino
+    private static final int WALLKICK[][][] =
+	{
+		{{-1, 0}, {-1, 1}, {0, -2}, {-1, -2}},	// 0>>1
+		{{1, 0}, {1, -1}, {0, 2}, {1, 2}},	// 1>>2
+		{{1, 0}, {1, 1}, {0, -2}, {1, -2}},	// 2>>3
+		{{-1, 0}, {-1, -1}, {0, 2}, {-1, 2}},	// 3>>0
+	};
+
+	private static final int WALLKICK_I[][][] =
+	{
+		{{-2, 0}, {1, 0}, {-2, -1}, {1, 2}},
+        {{-1, 0}, {2, 0}, {-1, 2}, {2, -1}},
+		{{2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
+		{{1, 0}, {-2, 0}, {1, -2}, {-2, 1}},
+    };
+
     private Tetromino currentTetromino;
     private Tetromino ghostPiece;
 
@@ -192,8 +209,10 @@ public class TetrisBoard {
         currentTetromino.rotateClockwise();
 
         if (this.checkCollisions(this.currentTetromino, 0, 0, (x, y) -> false)) {
-            currentTetromino.rotateCounterclockwise();
-            return false;
+            if (!wallKick()) {
+                currentTetromino.rotateCounterclockwise();
+                return false;
+            }
         }
         if (toggleGhostPiece) {
             ghostPiece.rotateClockwise();
@@ -209,14 +228,57 @@ public class TetrisBoard {
         currentTetromino.rotateCounterclockwise();
 
         if (this.checkCollisions(this.currentTetromino, 0, 0, (x, y) -> false)) {
-            currentTetromino.rotateClockwise();
-            return false;
+            if (!wallKick()) {
+                currentTetromino.rotateClockwise();
+                return false;
+            }
         }
         if (toggleGhostPiece) {
             ghostPiece.rotateCounterclockwise();
         }
         this.updateGhostPiece();
         return true;
+    }
+
+    private boolean wallKick() {
+        int prevRot = this.currentTetromino.getPreviousRotation();
+        int currRot = this.currentTetromino.getCurrentRotation();
+        if (prevRot <= -1) {
+            return false;
+        }
+
+        int wise = 0;
+        if (currRot == 3) {
+            if (prevRot == 0) {
+                wise = -1;
+            } else {
+                wise = 1;
+            }
+        } else if (currRot == 0) {
+            if (prevRot == 3) {
+                wise = 1;
+            } else {
+                wise = -1;
+            }
+        } else {
+            wise = currRot - prevRot;
+        }
+
+        int[][][] wallkickData = WALLKICK;
+        if (this.currentTetromino.getTetrominoName().equalsIgnoreCase("I")) {
+            wallkickData = WALLKICK_I;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            int x = wallkickData[prevRot][i][0] * wise;
+            int y = wallkickData[prevRot][i][1] * wise;
+            if (!this.checkCollisions(this.currentTetromino, x, y, (x1, y1) -> !validIndex(x1, y1))) {
+                Point2D.Float pos = this.currentTetromino.getPosition();
+                this.currentTetromino.setPosition((int) pos.x + x, (int) pos.y + y);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void placeCurrTetromino() {
@@ -250,7 +312,7 @@ public class TetrisBoard {
         for (Block block : cells) {
             int blockY = (int) (block.getY() + pos.y);
             int blockX = (int) (block.getX() + pos.x);
-            if (!validIndex(blockX, blockY) || extraTestForXAndY.test(blockX, blockY) || (board[blockY - 1 + yOffset][blockX - 1 + xOffset] != null)) {
+            if (!validIndex(blockX + xOffset, blockY + yOffset) || extraTestForXAndY.test(blockX, blockY) || (board[blockY - 1 + yOffset][blockX - 1 + xOffset] != null)) {
                 return true;
             }
         }

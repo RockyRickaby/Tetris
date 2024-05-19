@@ -15,6 +15,8 @@ public class Tetromino {
     private Point2D.Float center;
     private Point2D.Float position;
 
+    private int prevRotation, currRotation;
+
     public Tetromino(String name, Block[] cells, Point2D.Float position, Point2D.Float center) {
         this.name = name;
         this.cells = cells;
@@ -22,6 +24,9 @@ public class Tetromino {
         this.initialPos = new Point2D.Float();
         this.initialPos.setLocation(position);
         this.center = center;
+
+        this.prevRotation = -1;
+        this.currRotation = 0;
 
         this.backup = new Block[cells.length];
         for (int i = 0; i < cells.length; i++) {
@@ -143,6 +148,8 @@ public class Tetromino {
             }
         }
         this.position.setLocation(initialPos);
+        this.prevRotation = -1;
+        this.currRotation = 0;
     }
 
     public Tetromino moveUp() {
@@ -173,16 +180,28 @@ public class Tetromino {
         return rotate(Rotations.COUNTERCLOCKWISE);
     }
 
+    public int getCurrentRotation() {
+        return this.currRotation;
+    }
+
+    public int getPreviousRotation() {
+        return this.prevRotation;
+    }
+
     private Tetromino rotate(Rotations r) {
         float f1, f2;
         switch (r) {
             case CLOCKWISE:
                 f1 = 1;
                 f2 = -1;
+                this.prevRotation = this.currRotation;
+                this.currRotation = (this.currRotation + 4 + 1) % 4;
                 break;
             case COUNTERCLOCKWISE:
                 f1 = -1;
                 f2 = 1;
+                this.prevRotation = this.currRotation;
+                this.currRotation = (this.currRotation + 4 - 1) % 4;
                 break;
             default:
                 return this;            
