@@ -3,9 +3,7 @@ package tetris;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
 
 import enums.Actions;
@@ -16,7 +14,6 @@ public class TetrisGame {
     private static final long LOCK_DELAY = (int) 5e8;
 
     private ArrayList<Tetromino> pieces;
-    private Queue<Tetromino> pieces2;
     private Tetromino nextPiece;
     private TetrisBoard board;
     private Random rand;
@@ -37,9 +34,6 @@ public class TetrisGame {
 
         TetrominoFactory fac = new TetrominoFactory(board.getWidth(), board.getHeight());
         this.pieces = fac.getPieces();
-        this.pieces2 = new LinkedList<>();
-
-        pieces2.addAll(pieces);
 
         this.setPieces();
 
