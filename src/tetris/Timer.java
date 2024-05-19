@@ -13,4 +13,8 @@ public class Timer {
         this.firstTime = currTime;
         return timeElapsed;
     }
+
+    public void reset() {
+        this.firstTime = System.nanoTime();
+    }
 }
