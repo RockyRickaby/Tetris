@@ -2,40 +2,43 @@ package tetris;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.Queue;
 
 import enums.Actions;
 import pieces.Tetromino;
 import pieces.TetrominoFactory;
+
 // TODO - CONSIDER IMPLEMENTING A WAY TO SWAP PIECES
 public class TetrisGame {
-    private static final long LOCK_DELAY = (int) 5e8;
+    private static final long LOCK_DELAY = (long) 5e8;
 
-    private ArrayList<Tetromino> pieces;
-    private Tetromino nextPiece;
+    private List<Tetromino> pieces;
+    private Queue<Tetromino> bag;
+
     private TetrisBoard board;
-    private Random rand;
 
     private long elapsedTimeAccumulator;
     private long lockDelayAccumulator;
     private long updateInterval;
-    private HashSet<String> usedPieces;
+
+    private int nextPieceIdx;
 
     private boolean isOver;
     private boolean hasJustMoved;
 
     public TetrisGame(TetrisBoard board, long updateIntervalInNanoSeconds) {
-        this.nextPiece = null;
         this.board = board;
-        this.rand = new Random();
-        this.usedPieces = new HashSet<>();
 
         TetrominoFactory fac = new TetrominoFactory(board.getWidth(), board.getHeight());
-        this.pieces = fac.getPieces();
 
-        this.setPieces();
+        this.nextPieceIdx = 0;
+        this.pieces = fac.getPieces();
+        Collections.shuffle(pieces);
+        this.bag = new LinkedList<>(pieces);
+
+        this.setPieces7bag();
 
         this.elapsedTimeAccumulator = this.lockDelayAccumulator = 0;
         this.updateInterval = updateIntervalInNanoSeconds;
@@ -48,7 +51,7 @@ public class TetrisGame {
     }
 
     public Tetromino getNextPiece() {
-        return this.nextPiece;
+        return this.bag.peek();
     }
 
     public List<Tetromino> getPieces() {
@@ -67,33 +70,22 @@ public class TetrisGame {
         this.updateInterval = intervalInNanoseconds;
     }
 
-    private void setPieces() {
-        nextPiece = nextPiece == null ? getRandomPiece() : nextPiece;
-        if (!board.setCurrentTetromino(nextPiece)) {
-            this.reset(); // TODO - consider changing how the game behaves when the player loses
+    public Queue<Tetromino> getNextPieceQueue() {
+        return this.bag;
+    }
+
+    private void setPieces7bag() {
+        if (nextPieceIdx <= 0) {
+            Collections.shuffle(pieces);
+        }
+
+        if (!board.setCurrentTetromino(bag.poll().copy())) {
+            this.reset();
             return;
         }
 
-        Tetromino aux = getRandomPiece();
-        String nextPieceName = nextPiece.getTetrominoName();
-        while (aux.getTetrominoName().equals(nextPieceName)) {
-            aux = getRandomPiece();
-        }
-        nextPiece = aux;
-    }
-
-    private Tetromino getRandomPiece() {
-        if (usedPieces.size() == pieces.size()) {
-            usedPieces.clear();
-        }
-
-        int randMaxVal = pieces.size();
-
-        Tetromino tet = pieces.get(rand.nextInt(randMaxVal));
-        while (!usedPieces.add(tet.getTetrominoName())) {
-            tet = pieces.get(rand.nextInt(randMaxVal));
-        }
-        return tet;
+        bag.offer(pieces.get(nextPieceIdx));
+        nextPieceIdx = (nextPieceIdx + 1) % pieces.size();
     }
 
     private boolean clearRows() {
@@ -125,7 +117,7 @@ public class TetrisGame {
     private void placeAndSetTetromino() {
         board.placeCurrTetromino();
         clearRows();
-        setPieces();
+        setPieces7bag();
     }
 
     public boolean moveCurrentTetromino(Actions movement) {
@@ -177,7 +169,16 @@ public class TetrisGame {
 
     public void reset() {
         this.board.clearAll();
-        this.setPieces();
+
+        this.nextPieceIdx = 0;
+
+        this.bag.clear();
+        
+        Collections.shuffle(pieces);
+        this.bag.addAll(pieces);
+
+        this.setPieces7bag();
+        // this.setPieces();
         this.isOver = false;
     }
 }

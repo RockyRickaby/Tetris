@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.Queue;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -48,7 +49,6 @@ public class TetrisRenderer extends JPanel {
     private float boardXOffset;
 
     private float nextpieceXOffset;
-    private float nextpieceYOffset;
 
     public TetrisRenderer(TetrisGame game, Dimension preferredSize) {
         this.game = game;
@@ -62,10 +62,9 @@ public class TetrisRenderer extends JPanel {
                 TetrisBoard b = game.getTetrisBoard();
 
                 blockScale = height / (b.getHeight() + 2);
-                boardXOffset =  width / 8; 
+                boardXOffset =  width / 6; 
 
                 nextpieceXOffset = boardXOffset + blockScale * (b.getWidth() + 4);
-                nextpieceYOffset = blockScale * (b.getHeight() - b.getHeight() / 2);
             }
         });
 
@@ -269,13 +268,16 @@ public class TetrisRenderer extends JPanel {
             drawBlock(g2d, rect, b.getColor(), Color.BLACK);
         }
         
-        // this part has been indented and put under its own scope
-        // to express how I don't really like it.
-        // I like it so little that I had to make it stand out
-        {
-            Tetromino nextPiece = game.getNextPiece();
-            Block[] nextPieceBlocks = nextPiece.getBlocks();
+        final int countMax = 6;
+        int count = 0;
+        float yQueueOffset = 0;
+        for (Tetromino nextPiece : game.getNextPieceQueue()) {
+            if (count >= countMax) {
+                break;
+            }
 
+            Block[] nextPieceBlocks = nextPiece.getBlocks();
+    
             int maxX = Integer.MIN_VALUE;
             for (Block b : nextPieceBlocks) {
                 maxX = Math.max(maxX, (int) b.getX());
@@ -283,26 +285,27 @@ public class TetrisRenderer extends JPanel {
             // draws next piece thingy
             float subgridXOffset = (maxX) % 2 == 0 ? 1 : 0.5f;
             float subgridYOffset = 0;
-        
-            rect.setFrame(nextpieceXOffset, nextpieceYOffset + blockScale, NEXT_PIECE_GRID_SIZE * blockScale, NEXT_PIECE_GRID_SIZE * blockScale);
-        
+                
             // special case. this one is rendered relatively centralized on the subgrid
             if (nextPiece.getTetrominoName().equals("O")) {
                 subgridXOffset = subgridXOffset + 1;
                 subgridYOffset = 1;
             }
-        
+            
             for (Block b : nextPieceBlocks) {
                 float x = b.getX();
                 float y = b.getY();
             
-                rect.setFrame((x + subgridXOffset) * blockScale + nextpieceXOffset, (NEXT_PIECE_GRID_SIZE / 2 + 2 - y - subgridYOffset + 1) * blockScale + nextpieceYOffset, blockScale, blockScale);
+                rect.setFrame((x + subgridXOffset) * blockScale + nextpieceXOffset, (NEXT_PIECE_GRID_SIZE / 2 + 2 - y - subgridYOffset + .5 + yQueueOffset) * blockScale, blockScale, blockScale);
                 drawBlock(g2d, rect, b.getColor(), Color.BLACK);
             }
-        }
 
-        rect.setFrame(nextpieceXOffset, nextpieceYOffset + blockScale, NEXT_PIECE_GRID_SIZE * blockScale, NEXT_PIECE_GRID_SIZE * blockScale);
-        
+            count++;
+            yQueueOffset += 3.80;
+        }
+        yQueueOffset += 3.80;
+
+        rect.setFrame(nextpieceXOffset, blockScale , NEXT_PIECE_GRID_SIZE * blockScale, (yQueueOffset - 3) * blockScale);
         g2d.setStroke(new BasicStroke(3.25F));
         drawBlock(g2d, rect, null, Color.GRAY);
     }  
