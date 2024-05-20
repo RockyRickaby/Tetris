@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
-import java.util.Queue;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;

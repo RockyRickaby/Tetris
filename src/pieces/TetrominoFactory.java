@@ -114,10 +114,10 @@ public class TetrominoFactory {
 
     public Tetromino createZPiece() {
         Block[] points = {
-            new Block(2, 2, Color.RED),
+            new Block(0, 2, Color.RED),
             new Block(1, 2, Color.RED),
             new Block(1, 1, Color.RED),
-            new Block(0, 1, Color.RED)
+            new Block(2, 1, Color.RED),
         };
 
         Point2D.Float center = new Point2D.Float(points[2].getX(), points[2].getY());
