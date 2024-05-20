@@ -22,7 +22,7 @@ This implementation was developed with (at least part of) the [Tetris Guidelines
 - The playfield is 10x24
 - There was an attempt to implement the Super/Standard Rotation System (SRS) for movements and rotations
 - The pieces spawn already in the playfield
-- The Random Generator for the pieces is based on the 7-bag Random Generator (but for now, there's no next piece *queue*, as the current implementation only allows for *one* next piece to be shown)
+- The Random Generator for the pieces is based on the 7-bag Random Generator
 - There's no "hold piece" (nor sounds (nor a scoring system :/ ))
 - The ghost piece is enabled by default, but can be toggled on/off by pressing the G key during gameplay
 
