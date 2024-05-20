@@ -41,13 +41,3 @@ for the rendering part) would have the y-axis growing upwards instead of downwar
 I also tried to apply certain concepts that I've learned in my Computer Graphics classes so far (19/05/2024), but without much success.
 
 Also, a lot of the methods defined in the project return copies of attributes instead of references to the things. I hope you don't mind it :D
-
----
-
-Tetris © 1985~XXXX Tetris Holding.
-Tetris logos, Tetris theme song and Tetriminos are trademarks of Tetris Holding.
-The Tetris trade dress is owned by Tetris Holding.
-Licensed to The Tetris Company.
-Tetris Game Design by Alexey Pajitnov.
-Tetris Logo Design by Roger Dean.
-All Rights Reserved.
