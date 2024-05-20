@@ -1,5 +1,10 @@
 # Tetris (made in Java)
 
+I don't play Tetris very well xd
+
+https://github.com/RockyRickaby/Tetris/assets/111474120/d5f77899-9207-4388-b925-219b85439804
+
+
 This is just one of my little personal projects, which was, as you might've realized
 by the title, implementing a Tetris clone (in Java. I'm kinda obsessed with Java
 because of college, but I do wish to experiment with other languages too).
