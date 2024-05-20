@@ -12,7 +12,6 @@ import pieces.Tetromino;
  * The rest is intended to be managed by other classes/objects.
  */
 public class TetrisBoard {
-    // Nullpomino
     private static final int WALLKICK[][][] =
 	{
 		{{-1, 0}, {-1, 1}, {0, -2}, {-1, -2}},	// 0>>1
