@@ -1,5 +1,10 @@
 # Tetris (made in Java)
 
+I don't play Tetris very well xd
+
+https://github.com/RockyRickaby/Tetris/assets/111474120/d5f77899-9207-4388-b925-219b85439804
+
+
 This is just one of my little personal projects, which was, as you might've realized
 by the title, implementing a Tetris clone (in Java. I'm kinda obsessed with Java
 because of college, but I do wish to experiment with other languages too).
@@ -41,13 +46,3 @@ for the rendering part) would have the y-axis growing upwards instead of downwar
 I also tried to apply certain concepts that I've learned in my Computer Graphics classes so far (19/05/2024), but without much success.
 
 Also, a lot of the methods defined in the project return copies of attributes instead of references to the things. I hope you don't mind it :D
-
----
-
-Tetris © 1985~XXXX Tetris Holding.
-Tetris logos, Tetris theme song and Tetriminos are trademarks of Tetris Holding.
-The Tetris trade dress is owned by Tetris Holding.
-Licensed to The Tetris Company.
-Tetris Game Design by Alexey Pajitnov.
-Tetris Logo Design by Roger Dean.
-All Rights Reserved.
