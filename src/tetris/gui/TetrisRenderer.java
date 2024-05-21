@@ -40,6 +40,7 @@ public class TetrisRenderer extends JPanel {
     private static final String ACTION_MOVE_LEFT = "MOVE_LEFT";
 
     private TetrisGame game;
+    private TetrisBoard board;
 
     private javax.swing.Timer gameTimer;
     private Timer timer;
@@ -51,6 +52,7 @@ public class TetrisRenderer extends JPanel {
 
     public TetrisRenderer(TetrisGame game, Dimension preferredSize) {
         this.game = game;
+        this.board = game.getTetrisBoard();
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -58,12 +60,10 @@ public class TetrisRenderer extends JPanel {
                 float height = getHeight();
                 float width = getWidth();
 
-                TetrisBoard b = game.getTetrisBoard();
-
-                blockScale = height / (b.getHeight() + 2);
+                blockScale = height / (board.getHeight() + 2);
                 boardXOffset =  width / 6; 
 
-                nextpieceXOffset = boardXOffset + blockScale * (b.getWidth() + 4);
+                nextpieceXOffset = boardXOffset + blockScale * (board.getWidth() + 4);
             }
         });
 
@@ -208,8 +208,6 @@ public class TetrisRenderer extends JPanel {
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-        TetrisBoard board = game.getTetrisBoard();
 
         int boardWidth = board.getWidth();
         int boardHeight = board.getHeight();

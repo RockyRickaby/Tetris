@@ -4,7 +4,7 @@ import tetris.TetrisBoard;
 import tetris.TetrisGUI;
 import tetris.TetrisGame;
 
-public class Tetris {
+public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
