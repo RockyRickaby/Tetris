@@ -35,7 +35,7 @@ public class TetrominoFactory {
 
         float centerPos = (points[0].getX() + points[points.length - 1].getX()) / 2;
         Point2D.Float center = new Point2D.Float(centerPos, centerPos);
-        Point2D.Float position = new Point2D.Float(boardWidth / 2 - 1, boardHeight - 3);
+        Point2D.Float position = new Point2D.Float(boardWidth / 2 - 1, boardHeight - 2);
 
         return new Tetromino("I", points, position, center);
     }
