@@ -37,7 +37,7 @@ As for the controls:
 
 The State enum is completely unused and will be removed whenever I feel like it
 
-The game has yet to be properly centralized on wider screens.
+The game has yet to be properly centered on wider screens.
 
 ### Some other things that might be worth talking about
 
