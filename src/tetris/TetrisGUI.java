@@ -8,8 +8,16 @@ import javax.swing.JPanel;
 
 import tetris.gui.TetrisRenderer;
 
+/**
+ * The TetrisGUI class merely serves as a Frame where
+ * we can put the components necessary to make our game work.
+ */
 public class TetrisGUI extends JFrame {
 
+    /**
+     * Creates a new TetrisGUI
+     * @param game the TetrisGame to be rendered.
+     */
     public TetrisGUI(TetrisGame game) {
         this.add(mainPanel(game));
         this.setBackground(Color.BLACK);

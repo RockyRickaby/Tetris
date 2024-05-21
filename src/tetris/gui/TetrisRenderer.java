@@ -24,6 +24,11 @@ import tetris.TetrisBoard;
 import tetris.TetrisGame;
 import tetris.Timer;
 
+/**
+ * The TetrisRenderer class serves to render the TetrisGame
+ * class on the screen and to send user input to the game.
+ * That's it.
+ */
 public class TetrisRenderer extends JPanel {
     private static final int NEXT_PIECE_GRID_SIZE = 5;
     private static final int DELAY_MS = 33;
@@ -50,6 +55,12 @@ public class TetrisRenderer extends JPanel {
 
     private float nextpieceXOffset;
 
+    /**
+     * Creates a new TetrisRenderer for the {@code game} with
+     * preferred dimensions as {@code preferredSize}.
+     * @param game
+     * @param preferredSize
+     */
     public TetrisRenderer(TetrisGame game, Dimension preferredSize) {
         this.game = game;
         this.board = game.getTetrisBoard();
@@ -193,6 +204,16 @@ public class TetrisRenderer extends JPanel {
         this.setPreferredSize(preferredSize);
     }
 
+    /**
+     * Draws a block as defined by {@code rect}
+     * with contour {@code contourColor} and 
+     * fill color {@code fillColor}
+     * 
+     * @param g2d
+     * @param rect
+     * @param fillColor
+     * @param contourColor
+     */
     private void drawBlock(Graphics2D g2d, Rectangle2D.Float rect, Color fillColor, Color contourColor) {
         if (fillColor != null) {
             g2d.setColor(fillColor);
@@ -248,7 +269,7 @@ public class TetrisRenderer extends JPanel {
         Tetromino ghostPiece = board.getGhostPiece();
 
         if (ghostPiece != null) {
-            for (Block b : ghostPiece.getBlocks()) {
+            for (Block b : ghostPiece.getBody()) {
                 float x = b.getX() + ghostPiece.getPosition().x;
                 float y = b.getY() + ghostPiece.getPosition().y;
     
@@ -257,7 +278,7 @@ public class TetrisRenderer extends JPanel {
             }
         }
 
-        for (Block b : piece.getBlocks()) {
+        for (Block b : piece.getBody()) {
             float x = b.getX() + piece.getPosition().x;
             float y = b.getY() + piece.getPosition().y;
 
@@ -273,7 +294,7 @@ public class TetrisRenderer extends JPanel {
                 break;
             }
 
-            Block[] nextPieceBlocks = nextPiece.getBlocks();
+            Block[] nextPieceBlocks = nextPiece.getBody();
     
             int maxX = Integer.MIN_VALUE;
             for (Block b : nextPieceBlocks) {

@@ -273,7 +273,7 @@ public class TetrisBoard {
             int y = wallkickData[prevRot][i][1] * wise;
             if (!this.checkCollisions(this.currentTetromino, x, y, (x1, y1) -> !validIndex(x1, y1))) {
                 Point2D.Float pos = this.currentTetromino.getPosition();
-                this.currentTetromino.setPosition((int) pos.x + x, (int) pos.y + y);
+                this.currentTetromino.setPosition(pos.x + x, pos.y + y);
                 return true;
             }
         }
@@ -284,7 +284,7 @@ public class TetrisBoard {
         if (currentTetromino == null) {
             return;
         }
-        Block[] cells = currentTetromino.getBlocks();
+        Block[] cells = currentTetromino.getBody();
         Point2D.Float pos = currentTetromino.getPosition();
 
         for (Block b : cells) {
@@ -306,7 +306,7 @@ public class TetrisBoard {
         if (piece == null) {
             return false;
         }
-        Block[] cells = piece.getBlocks();
+        Block[] cells = piece.getBody();
         Point2D.Float pos = piece.getPosition();
         for (Block block : cells) {
             int blockY = (int) (block.getY() + pos.y);

@@ -10,7 +10,10 @@ import enums.Actions;
 import pieces.Tetromino;
 import pieces.TetrominoFactory;
 
-// TODO - CONSIDER IMPLEMENTING A WAY TO SWAP PIECES
+/**
+ * The TetrisGame class manages the game and its more general
+ * rules.
+ */
 public class TetrisGame {
     private static final long LOCK_DELAY = (long) 5e8;
 
@@ -28,6 +31,13 @@ public class TetrisGame {
     private boolean isOver;
     private boolean hasJustMoved;
 
+    /**
+     * Creates a new TetrisGame with TetrisBoard {@code board}
+     * and a specific update interval (given in nanoseconds)
+     * in which the piece moves down.
+     * @param board
+     * @param updateIntervalInNanoSeconds the update interval in nanoseconds
+     */
     public TetrisGame(TetrisBoard board, long updateIntervalInNanoSeconds) {
         this.board = board;
 
@@ -46,34 +56,67 @@ public class TetrisGame {
         this.hasJustMoved = false;
     }
 
+    /**
+     * Toggles the ghost piece on/off.
+     * @return {@code true} if the ghost piece is toggled on. {@code false}
+     * if otherwise.
+     */
     public boolean toggleGhostPiece() {
         return this.board.toggleGhostPiece();
     }
 
+    /**
+     * Returns the immediate next piece available in the
+     * next piece queue (but does not remove it from the queue).
+     * @return the immediate next piece available in the queue.
+     */
     public Tetromino getNextPiece() {
         return this.bag.peek();
     }
 
+    /**
+     * Returns a list containing all the pieces used in this TetrisGame.
+     * @return a list of Tetrominoes.
+     */
     public List<Tetromino> getPieces() {
         return pieces;
     }
 
+    /**
+     * Returns the TetrisBoard used in this TetrisGame.
+     * @return the TetrisBoard.
+     */
     public TetrisBoard getTetrisBoard() {
         return this.board;
     }
 
+    /**
+     * Returns the update interval (in nanoseconds).
+     * @return update interval.
+     */
     public long getInterval() {
         return this.updateInterval;
     }
 
+    /**
+     * Sets the update interval to {@code intervalNanoseconds}
+     * @param intervalInNanoseconds the new update interval.
+     */
     public void setInterval(long intervalInNanoseconds) {
         this.updateInterval = intervalInNanoseconds;
     }
 
+    /**
+     * Returns the next piece queue. The queue contains 7 items.
+     * @return the next piece queue.
+     */
     public Queue<Tetromino> getNextPieceQueue() {
         return this.bag;
     }
 
+    /**
+     * Sets the next piece and manages the piece bags.
+     */
     private void setPieces7bag() {
         if (nextPieceIdx <= 0) {
             Collections.shuffle(pieces);
@@ -88,6 +131,11 @@ public class TetrisGame {
         nextPieceIdx = (nextPieceIdx + 1) % pieces.size();
     }
 
+    /**
+     * Clears n rows if necessary.
+     * @return {@code true} if any rows have been cleared.
+     * {@code false} if none have been cleared.
+     */
     private boolean clearRows() {
         int boardRows = board.getHeight();
         int boardColumns = board.getWidth();
@@ -114,12 +162,21 @@ public class TetrisGame {
         return true;
     }
 
+    /**
+     * Places the current Tetromino and 
+     * updates the next ones.
+     */
     private void placeAndSetTetromino() {
         board.placeCurrTetromino();
         clearRows();
         setPieces7bag();
     }
 
+    /**
+     * Moves the current Tetromino according to {@code movement}.
+     * @param movement where/how to move the piece 
+     * @return {@code true} if the movement was successful.
+     */
     public boolean moveCurrentTetromino(Actions movement) {
         switch (movement) {
             case HARD_DROP:
@@ -144,6 +201,10 @@ public class TetrisGame {
         }
     }
 
+    /**
+     * Updates the state of the game.
+     * @param timeElapsed the elapsed time since the last update.
+     */
     public void update(long timeElapsed) {
         this.elapsedTimeAccumulator += timeElapsed;
         if (this.isOver) {
@@ -167,6 +228,9 @@ public class TetrisGame {
         }
     }
 
+    /**
+     * Resets the whole thing.
+     */
     public void reset() {
         this.board.clearAll();
 
