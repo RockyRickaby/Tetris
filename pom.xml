@@ -6,7 +6,7 @@
 
   <groupId>com.mauro.tetris</groupId>
   <artifactId>Tetris</artifactId>
-  <version>0.0</version>
+  <version>1.0.0</version>
 
   <name>Tetris</name>
 
@@ -68,6 +68,15 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.4.2</version>
+          <configuration>
+            <archive>
+              <index>true</index>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <mainClass>com.mauro.tetris.App</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
