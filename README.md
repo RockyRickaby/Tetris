@@ -12,8 +12,8 @@ because of college, but I do wish to experiment with other languages too).
 
 No external libraries were used and this game has not been tested (yet) on other platforms besides Windows. The only library used is the Swing library, which comes with the JDK.
 
-Also, this is a VSCODE Java project :|
-Update: it's just your regular Maven project now! :D
+Also, this is a VSCODE Java project :|<br>
+**Update**: it's just your regular Maven project now! :D
 
 ## Building and running
 
