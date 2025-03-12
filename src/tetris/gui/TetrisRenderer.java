@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -234,22 +235,26 @@ public class TetrisRenderer extends JPanel {
         int boardHeight = board.getHeight();
 
         Rectangle2D.Float rect = new Rectangle2D.Float();
-        Color gray = Color.GRAY;
+
+        // TODO - renderizar imagem na bufferedimage para facilitar centralização
+        // BufferedImage bim = new BufferedImage(0, 0, BufferedImage.TYPE_INT_ARGB);
+        // Graphics2D bimg2d = (Graphics2D) bim.getGraphics(); 
+        g2d.drawImage(null, null, boardWidth, boardHeight);
 
         for (int i = 0; i <= boardHeight + 1; i++) {
             rect.setFrame(boardXOffset - blockScale, i * blockScale, blockScale, blockScale);
-            drawBlock(g2d, rect, gray, Color.BLACK);
+            drawBlock(g2d, rect, Color.GRAY, Color.BLACK);
 
             rect.setFrame(boardXOffset + boardWidth * blockScale, i * blockScale, blockScale, blockScale);
-            drawBlock(g2d, rect, gray, Color.BLACK);
+            drawBlock(g2d, rect, Color.GRAY, Color.BLACK);
         }
 
         for (int i = 0; i < boardWidth + 1; i++) {
             rect.setFrame(boardXOffset + i * blockScale, 0, blockScale, blockScale);
-            drawBlock(g2d, rect, gray, Color.BLACK);
+            drawBlock(g2d, rect, Color.GRAY, Color.BLACK);
 
             rect.setFrame(boardXOffset + i * blockScale, (boardHeight + 1) * blockScale, blockScale, blockScale);
-            drawBlock(g2d, rect, gray, Color.BLACK);
+            drawBlock(g2d, rect, Color.GRAY, Color.BLACK);
         }
 
         // draws grid
@@ -262,7 +267,7 @@ public class TetrisRenderer extends JPanel {
                 rect.setFrame((j - 1) * blockScale + boardXOffset, (boardHeight - i + 1) * blockScale, blockScale, blockScale);
                 drawBlock(g2d, rect, block.getColor(), Color.BLACK);
             }
-        }
+}
 
         // draws current Tetromino and GhostPiece
         Tetromino piece = board.getCurrentTetromino();

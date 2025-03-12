@@ -17,7 +17,8 @@ public class Timer {
 
     /**
      * Returns the elapsed time since the last time this method
-     * was called or since the creation of this Timer, whichever happened
+     * was called, since the creation of this Timer or since
+     * it was reset, whichever happened
      * last.
      * @return the time elapsed in nanoseconds.
      */
@@ -28,6 +29,9 @@ public class Timer {
         return timeElapsed;
     }
 
+    /**
+     * Resets this Timer
+     */
     public void reset() {
         this.firstTime = System.nanoTime();
     }
