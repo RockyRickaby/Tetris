@@ -20,13 +20,13 @@ Also, this is a VSCODE Java project :|<br>
 This project has no external dependencies, so you don't have to worry about that. If you're on VSCODE (as I am), you should be able to just run it from the App class. On the command line, you might want to run these commands:
 
 ```console
-mvn package
-java -jar ./target/Tetris-<current version>.jar
+$ mvn package
+$ java -jar ./target/Tetris-<current version>.jar
 ```
 
 Alternatively, if the second command doesn't work, try this:
 ```console
-java -cp ./target/Tetris-<current version>.jar com.mauro.tetris.App
+$ java -cp ./target/Tetris-<current version>.jar com.mauro.tetris.App
 ```
 
 You can find the current version within the `<version>` tags in the pom file. Double clicking the created JAR file should also open the game. 
