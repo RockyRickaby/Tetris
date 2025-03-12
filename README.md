@@ -33,7 +33,8 @@ As for the controls:
 - Z rotates the piece 90° counterclockwise
 - Up and X rotate the piece 90° clockwise
 - G toggles the ghost piece on/off
-- Esc pauses the game
+- P pauses the game
+- ESC exits the game
 
 The State enum is completely unused and will be removed whenever I feel like it
 

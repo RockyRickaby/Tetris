@@ -1,4 +1,4 @@
-package tetris.gui;
+package com.mauro.tetris.tetris.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,12 +18,12 @@ import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import enums.Actions;
-import pieces.Block;
-import pieces.Tetromino;
-import tetris.TetrisBoard;
-import tetris.TetrisGame;
-import tetris.Timer;
+import com.mauro.tetris.enums.Actions;
+import com.mauro.tetris.pieces.Block;
+import com.mauro.tetris.pieces.Tetromino;
+import com.mauro.tetris.tetris.TetrisBoard;
+import com.mauro.tetris.tetris.TetrisGame;
+import com.mauro.tetris.tetris.Timer;
 
 /**
  * The TetrisRenderer class serves to render the TetrisGame
@@ -36,6 +36,7 @@ public class TetrisRenderer extends JPanel {
     
     private static final String ACTION_TOGGLE_GHOST_PIECE = "TOGGLE_GHOST"; 
     private static final String ACTION_PAUSE = "PAUSE";
+    private static final String ACTION_EXIT = "EXIT";
 
     private static final String ACTION_ROTATE_CCW = "ROTATE_CCW";
     private static final String ACTION_ROTATE_CW = "ROTATE_CW";
@@ -179,7 +180,7 @@ public class TetrisRenderer extends JPanel {
             
         });
 
-        inputmap.put(KeyStroke.getKeyStroke("ESCAPE"), ACTION_PAUSE);
+        inputmap.put(KeyStroke.getKeyStroke("P"), ACTION_PAUSE);
         actionmap.put(ACTION_PAUSE, new AbstractAction() {
 
             @Override
@@ -191,7 +192,17 @@ public class TetrisRenderer extends JPanel {
                     gameTimer.start();
                 }
             }
-            
+ 
+        });
+
+        inputmap.put(KeyStroke.getKeyStroke("ESCAPE"), ACTION_EXIT);
+        actionmap.put(ACTION_EXIT, new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+
         });
 
         timer = new Timer();

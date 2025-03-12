@@ -1,8 +1,10 @@
+package com.mauro.tetris;
+
 import javax.swing.SwingUtilities;
 
-import tetris.TetrisBoard;
-import tetris.TetrisGUI;
-import tetris.TetrisGame;
+import com.mauro.tetris.tetris.TetrisBoard;
+import com.mauro.tetris.tetris.TetrisGUI;
+import com.mauro.tetris.tetris.TetrisGame;
 
 public class App {
     public static void main(String[] args) {

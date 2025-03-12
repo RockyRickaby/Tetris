@@ -1,4 +1,4 @@
-package tetris;
+package com.mauro.tetris.tetris;
 
 /**
  * The Timer class manages elapsed time since some moment in time.

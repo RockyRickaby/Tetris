@@ -1,11 +1,11 @@
-package tetris;
+package com.mauro.tetris.tetris;
 
 import java.awt.geom.Point2D;
 
 import java.util.function.BiPredicate;
 
-import pieces.Block;
-import pieces.Tetromino;
+import com.mauro.tetris.pieces.Block;
+import com.mauro.tetris.pieces.Tetromino;
 
 /**
  * The only thing this class manages automatically is the position of the ghost piece.

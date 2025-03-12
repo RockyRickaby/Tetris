@@ -1,4 +1,4 @@
-package tetris;
+package com.mauro.tetris.tetris;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import enums.Actions;
-import pieces.Tetromino;
-import pieces.TetrominoFactory;
+import com.mauro.tetris.enums.Actions;
+import com.mauro.tetris.pieces.Tetromino;
+import com.mauro.tetris.pieces.TetrominoFactory;
 
 /**
  * The TetrisGame class manages the game and its more general

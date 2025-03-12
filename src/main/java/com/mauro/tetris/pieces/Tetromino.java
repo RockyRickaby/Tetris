@@ -1,10 +1,10 @@
-package pieces;
+package com.mauro.tetris.pieces;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import enums.Rotations;
+import com.mauro.tetris.enums.Rotations;
 
 /**
  * The Tetromino class represents the pieces that exist in a typical

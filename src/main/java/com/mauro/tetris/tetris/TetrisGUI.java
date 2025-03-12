@@ -1,4 +1,4 @@
-package tetris;
+package com.mauro.tetris.tetris;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import tetris.gui.TetrisRenderer;
+import com.mauro.tetris.tetris.gui.TetrisRenderer;
 
 /**
  * The TetrisGUI class merely serves as a Frame where
